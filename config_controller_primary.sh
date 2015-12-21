@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# wait for volume to attach properly
+sleep 180
+
 set -e
 
 export HOME=${HOME:-"/root"}
@@ -179,9 +182,6 @@ if [ "%%DEPLOY_SWIFT%%" = "yes" ]; then
     mount /srv/${DISK}
   done
 fi
-
-# wait for volume to attach
-sleep 180
 
 checkout_dir="/opt"
 config_dir="/etc/openstack_deploy"

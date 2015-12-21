@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# wait for volume to attach properly
+sleep 180
+
 set -e
 
 export HOME=${HOME:-"/root"}

@@ -163,18 +163,13 @@ EOF
 ifup -a
 
 # Partition Cloud Block Storage disk used by cinder and swift
-fdisk /dev/xvdf << EOF
-n
-p
-1
-
-
-w
-EOF
+if [ ! -b /dev/xvdf1 ]; then
+    echo -e "n\np\n1\n\n\nw\n" | fdisk /dev/xvdf
+fi
 
 if [ "%%DEPLOY_SWIFT%%" = "yes" ]; then
-  pvcreate /dev/xvdf1
-  vgcreate swift /dev/xvdf1
+  pvcreate /dev/xvdf1 || true
+  vgcreate swift /dev/xvdf1 || true
 
   for DISK in disk1 disk2 disk3; do
     lvcreate -L 10G -n ${DISK} swift
@@ -184,6 +179,9 @@ if [ "%%DEPLOY_SWIFT%%" = "yes" ]; then
     mount /srv/${DISK}
   done
 fi
+
+# wait for volume to attach
+sleep 180
 
 checkout_dir="/opt"
 config_dir="/etc/openstack_deploy"
